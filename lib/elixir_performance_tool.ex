@@ -30,8 +30,7 @@ defmodule ElixirPerformanceTool do
     {time_2, upload_id} = send_fileupload(url)
     time_3 = send_convert_pdf(url, upload_id)
     time_4 = send_download(url, upload_id)
-    time = time_1 + time_2 + time_3 + time_4
-    time
+    time_1 + time_2 + time_3 + time_4
   end
 
   def send_status(url) do
@@ -72,7 +71,7 @@ defmodule ElixirPerformanceTool do
     send_download(url, upload_id, time + time_tmp, status_code)
   end
 
-  def send_download(url, upload_id, time, status_code) when status_code === 200 do
+  def send_download(_, _, time, status_code) when status_code === 200 do
     time
   end
 
