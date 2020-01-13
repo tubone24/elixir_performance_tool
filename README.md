@@ -19,3 +19,18 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/elixir_performance_tool](https://hexdocs.pm/elixir_performance_tool).
 
+## Precondition
+
+### Dependencies
+
+```
+mix deps.get
+```
+
+### Run
+
+```
+iex -S mix
+
+iex(1)> ElixirPerformanceTool.run(10, 10)
+```
