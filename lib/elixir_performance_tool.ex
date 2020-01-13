@@ -27,7 +27,8 @@ defmodule ElixirPerformanceTool do
     time_1 = send_status(url)
     {time_2, upload_id} = send_fileupload(url)
     time_3 = send_convert_pdf(url, upload_id)
-    time = time_1 + time_2 + time_3
+    time_4 = send_download(url, upload_id)
+    time = time_1 + time_2 + time_3 + time_4
     time
   end
 
@@ -51,5 +52,29 @@ defmodule ElixirPerformanceTool do
     payload = Poison.encode!(%{"contentType" => "image/png", "uploadId" => upload_id})
     {time, _} = :timer.tc(fn -> HTTPoison.post!(convert_url, payload, [],[{:timeout, 1000000000}]) end)
     time
+  end
+
+  def send_download(url, upload_id) do
+    download_url = url <> "convert/pdf/download"
+    payload = Poison.encode!(%{"uploadId" => upload_id})
+    {time, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 1000000000}]) end)
+    status_code = ret.status_code
+    if status_code !== 200 do
+      send_download(url, upload_id, time)
+    else
+      time
+    end
+  end
+
+  def send_download(url, upload_id, time) do
+    download_url = url <> "convert/pdf/download"
+    payload = Poison.encode!(%{"uploadId" => upload_id})
+    {time_tmp, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 1000000000}]) end)
+    status_code = ret.status_code
+    if status_code !== 200 do
+      send_download(url, upload_id, time + time_tmp)
+    else
+      time
+    end
   end
 end
