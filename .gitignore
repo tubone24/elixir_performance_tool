@@ -24,3 +24,6 @@ elixir_performance_tool-*.tar
 
 # idea
 .idea
+
+# test
+response.csv

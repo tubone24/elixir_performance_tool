@@ -1,5 +1,6 @@
 defmodule ElixirPerformanceTool do
   def run(process_num,max_count) do
+    write_csv_header()
     run(process_num,max_count,0)
   end
 
@@ -21,6 +22,7 @@ defmodule ElixirPerformanceTool do
                  |> Enum.map(fn(task) -> Task.await(task,1000_000) end)
                  |> Enum.reduce(0, fn x,total -> total + x end)
     IO.inspect "#{count}, average_time: #{time_total / process_num / 1000} ms, time_total: #{time_total / 1000} ms"
+    write_csv(create_table_data(count, "#{time_total / process_num / 1000}", "#{time_total / 1000}"))
   end
 
   def send_requests(url) do
@@ -76,5 +78,22 @@ defmodule ElixirPerformanceTool do
     else
       time
     end
+  end
+
+  def write_csv_header() do
+    file = File.open!("response.csv", [:write, :utf8])
+    [["date(UTC)", "count", "average_time(ms)", "total_time(ms)"]] |> CSV.encode(headers: false) |> Enum.each(&IO.write(file, &1))
+  end
+
+  def write_csv(table_data) do
+    file = File.open!("response.csv", [:append, :utf8])
+    table_data |> CSV.encode(headers: false) |> Enum.each(&IO.write(file, &1))
+  end
+
+  def create_table_data(count, average_time, total_time) do
+    now = NaiveDateTime.utc_now()
+    {mills, _} = now.microsecond
+    date = "#{now.year}-#{now.month}-#{now.day} #{now.hour}:#{now.minute}:#{now.second}.#{mills}"
+    [["#{date}","#{count}", "#{average_time}", "#{total_time}"]]
   end
 end
