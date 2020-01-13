@@ -22,7 +22,7 @@ defmodule ElixirPerformanceTool do
                  |> Enum.map(fn(task) -> Task.await(task,1000_000) end)
                  |> Enum.reduce(0, fn x,total -> total + x end)
     IO.inspect "#{count}, average_time: #{time_total / process_num / 1000} ms, time_total: #{time_total / 1000} ms"
-    write_csv(create_table_data(count, "#{time_total / process_num / 1000}", "#{time_total / 1000}"))
+    _ = create_table_data(count, "#{time_total / process_num / 1000}", "#{time_total / 1000}") |> write_csv
   end
 
   def send_requests(url) do
@@ -52,32 +52,28 @@ defmodule ElixirPerformanceTool do
   def send_convert_pdf(url, upload_id) do
     convert_url = url <> "convert/pdf"
     payload = Poison.encode!(%{"contentType" => "image/png", "uploadId" => upload_id})
-    {time, _} = :timer.tc(fn -> HTTPoison.post!(convert_url, payload, [],[{:timeout, 1000000000}]) end)
+    {time, _} = :timer.tc(fn -> HTTPoison.post!(convert_url, payload, [],[{:timeout, 100000000000}]) end)
     time
   end
 
   def send_download(url, upload_id) do
     download_url = url <> "convert/pdf/download"
     payload = Poison.encode!(%{"uploadId" => upload_id})
-    {time, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 1000000000}]) end)
+    {time, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 100000000000}]) end)
     status_code = ret.status_code
-    if status_code !== 200 do
-      send_download(url, upload_id, time)
-    else
-      time
-    end
+    send_download(url, upload_id, time, status_code)
   end
 
-  def send_download(url, upload_id, time) do
+  def send_download(url, upload_id, time, status_code) when status_code !== 200 do
     download_url = url <> "convert/pdf/download"
     payload = Poison.encode!(%{"uploadId" => upload_id})
     {time_tmp, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 1000000000}]) end)
     status_code = ret.status_code
-    if status_code !== 200 do
-      send_download(url, upload_id, time + time_tmp)
-    else
-      time
-    end
+    send_download(url, upload_id, time + time_tmp, status_code)
+  end
+
+  def send_download(url, upload_id, time, status_code) when status_code === 200 do
+    time
   end
 
   def write_csv_header() do
