@@ -1,6 +1,8 @@
 defmodule ElixirPerformanceTool do
+  @url "https://ebook-homebrew.herokuapp.com/"
   def run(process_num,max_count) do
     write_csv_header()
+    warmup_request(@url)
     run(process_num,max_count,0)
   end
 
@@ -17,7 +19,7 @@ defmodule ElixirPerformanceTool do
   def send_requests_parallel(process_num,count) do
     time_total = Enum.map(1..process_num, &Task.async(fn ->
       &1
-      send_requests("https://ebook-homebrew.herokuapp.com/")
+      send_requests(@url)
     end))
                  |> Enum.map(fn(task) -> Task.await(task,1000_000) end)
                  |> Enum.reduce(0, fn x,total -> total + x end)
@@ -35,15 +37,21 @@ defmodule ElixirPerformanceTool do
 
   def send_status(url) do
     status_url = url <> "status"
-    {time, _} = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, 1000000000}]) end)
+    {time, _} = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, 10000000}]) end)
     time
+  end
+
+  def warmup_request(url) do
+    status_url = url <> "status"
+    _ = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, 600000000}]) end)
+    true
   end
 
   def send_fileupload(url) do
     upload_url = url <> "data/upload"
     {_, encoded_png} = File.read("encoded_png.txt")
     payload = Poison.encode!(%{"contentType" => "image/png", "images" => [encoded_png]})
-    {time, ret} = :timer.tc(fn -> HTTPoison.post!(upload_url, payload, [],[{:timeout, 1000000000}]) end)
+    {time, ret} = :timer.tc(fn -> HTTPoison.post!(upload_url, payload, [],[{:timeout, 10000000}]) end)
     upload_id = Poison.decode!(ret.body)["upload_id"]
     {time, upload_id}
   end
@@ -51,14 +59,14 @@ defmodule ElixirPerformanceTool do
   def send_convert_pdf(url, upload_id) do
     convert_url = url <> "convert/pdf"
     payload = Poison.encode!(%{"contentType" => "image/png", "uploadId" => upload_id})
-    {time, _} = :timer.tc(fn -> HTTPoison.post!(convert_url, payload, [],[{:timeout, 100000000000}]) end)
+    {time, _} = :timer.tc(fn -> HTTPoison.post!(convert_url, payload, [],[{:timeout, 10000000}]) end)
     time
   end
 
   def send_download(url, upload_id) do
     download_url = url <> "convert/pdf/download"
     payload = Poison.encode!(%{"uploadId" => upload_id})
-    {time, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 100000000000}]) end)
+    {time, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 10000000}]) end)
     status_code = ret.status_code
     send_download(url, upload_id, time, status_code)
   end
@@ -66,7 +74,7 @@ defmodule ElixirPerformanceTool do
   def send_download(url, upload_id, time, status_code) when status_code !== 200 do
     download_url = url <> "convert/pdf/download"
     payload = Poison.encode!(%{"uploadId" => upload_id})
-    {time_tmp, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 1000000000}]) end)
+    {time_tmp, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 10000000}]) end)
     status_code = ret.status_code
     send_download(url, upload_id, time + time_tmp, status_code)
   end
