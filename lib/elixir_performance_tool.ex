@@ -6,14 +6,14 @@ defmodule ElixirPerformanceTool do
     run(process_num,max_count,0)
   end
 
-  def run(process_num,max_count,count) do
-    if max_count === count do
-      IO.puts("process end. count:#{count}") # Fixme; Bad code, use recursive.
-    else
-      Task.async(fn -> send_requests_parallel(process_num,count) end)
-      :timer.sleep(1000)
-      run(process_num,max_count,count+1)
-    end
+  def run(process_num,max_count,count) when max_count !== count do
+    Task.async(fn -> send_requests_parallel(process_num,count) end)
+    :timer.sleep(1000)
+    run(process_num,max_count,count+1)
+  end
+
+  def run(_,max_count,count) when max_count === count do
+    IO.puts("process end. count:#{count}")
   end
 
   def send_requests_parallel(process_num,count) do
@@ -43,7 +43,7 @@ defmodule ElixirPerformanceTool do
 
   def warmup_request(url) do
     status_url = url <> "status"
-    _ = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, 600000000}]) end)
+    _ = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, 6000000000}]) end)
     true
   end
 
