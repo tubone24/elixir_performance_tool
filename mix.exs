@@ -18,7 +18,7 @@ defmodule ElixirPerformanceTool.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: [
-        main: "ElixirPerformanceTool",
+        main: "readme",
         logo: "elixir_perfomance_logo.png",
         extras: [
           "README.md"
