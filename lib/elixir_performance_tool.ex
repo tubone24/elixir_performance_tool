@@ -1,5 +1,26 @@
 defmodule ElixirPerformanceTool do
+  @moduledoc """
+  Performance test tool
+  Provides a function `run/2` for doing Performance test.
+  """
   @url "https://ebook-homebrew.herokuapp.com/"
+  @doc """
+  Run performance test
+
+  ## Params
+
+    - process_num: parallel task number
+    - max_count: repeating times
+
+  ## Examples
+
+      iex> ElixirPerformanceTool.run(10,10)
+      "0, average_time: 1422.0 ms, time_total: 1422.0 ms"
+      "2, average_time: 843.0 ms, time_total: 843.0 ms"
+      "1, average_time: 1969.0 ms, time_total: 1969.0 ms"
+      "3, average_time: 844.0 ms, time_total: 844.0 ms"
+      "4, average_time: 844.0 ms, time_total: 844.0 ms"
+  """
   def run(process_num,max_count) do
     write_csv_header()
     warmup_request(@url)
