@@ -18,6 +18,8 @@ Checking TAT benchmark test tools for Parallel HTTP requests by Elixir.
 
 ## Background
 
+One day, I needed to test the performance of Ebook Homebrew, and decided to solve it by creating a load testing tool that could send a lot of requests in parallel.
+
 ## Install
 
 ### Preconditions
