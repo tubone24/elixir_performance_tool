@@ -94,6 +94,7 @@ ElixirPerformanceTool      </a>
   Background
 </h2>
 
+<p>One day, I needed to test the performance of Ebook Homebrew, and decided to solve it by creating a load testing tool that could send a lot of requests in parallel.</p>
 <h2 id="install" class="section-heading">
   <a href="#install" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Install
@@ -114,11 +115,11 @@ ElixirPerformanceTool      </a>
 
 <p>If <a href="https://hex.pm/docs/publish">available in Hex</a>, the package can be installed
 by adding <code class="inline">elixir_performance_tool</code> to your list of dependencies in <code class="inline">mix.exs</code>:</p>
-<pre><code class="nohighlight makeup elixir"><span class="kd">def</span><span class="w"> </span><span class="nf">deps</span><span class="w"> </span><span class="k" data-group-id="7551588265-1">do</span><span class="w">
-  </span><span class="p" data-group-id="7551588265-2">[</span><span class="w">
-    </span><span class="p" data-group-id="7551588265-3">{</span><span class="ss">:elixir_performance_tool</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 0.1.0&quot;</span><span class="p" data-group-id="7551588265-3">}</span><span class="w">
-  </span><span class="p" data-group-id="7551588265-2">]</span><span class="w">
-</span><span class="k" data-group-id="7551588265-1">end</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="kd">def</span><span class="w"> </span><span class="nf">deps</span><span class="w"> </span><span class="k" data-group-id="1442391733-1">do</span><span class="w">
+  </span><span class="p" data-group-id="1442391733-2">[</span><span class="w">
+    </span><span class="p" data-group-id="1442391733-3">{</span><span class="ss">:elixir_performance_tool</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;~&gt; 0.1.0&quot;</span><span class="p" data-group-id="1442391733-3">}</span><span class="w">
+  </span><span class="p" data-group-id="1442391733-2">]</span><span class="w">
+</span><span class="k" data-group-id="1442391733-1">end</span></code></pre>
 <p>Documentation can be generated with <a href="https://github.com/elixir-lang/ex_doc">ExDoc</a>
 and published on <a href="https://hexdocs.pm">HexDocs</a>. Once published, the docs can
 be found at <a href="https://hexdocs.pm/elixir_performance_tool">https://hexdocs.pm/elixir_performance_tool</a>.</p>
@@ -135,7 +136,7 @@ be found at <a href="https://hexdocs.pm/elixir_performance_tool">https://hexdocs
 <p>Run the test by IEx.</p>
 <pre><code class="nohighlight makeup elixir"><span class="n">iex</span><span class="w"> </span><span class="o">-</span><span class="nc">S</span><span class="w"> </span><span class="n">mix</span><span class="w">
 
-</span><span class="gp unselectable">iex(1)&gt; </span><span class="nc">ElixirPerformanceTool</span><span class="o">.</span><span class="n">run</span><span class="p" data-group-id="3471255576-1">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="3471255576-1">)</span></code></pre>
+</span><span class="gp unselectable">iex(1)&gt; </span><span class="nc">ElixirPerformanceTool</span><span class="o">.</span><span class="n">run</span><span class="p" data-group-id="1701872414-1">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="1701872414-1">)</span></code></pre>
 <p>Function <code class="inline">ElixirPerformanceTool.run</code> set 2 args, first one is parallel task number, second one is repeating times.</p>
 <h2 id="contributing" class="section-heading">
   <a href="#contributing" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
