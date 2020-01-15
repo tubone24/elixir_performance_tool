@@ -64,7 +64,7 @@ defmodule ElixirPerformanceTool do
 
   def warmup_request(url) do
     status_url = url <> "status"
-    _ = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, 6000000000}]) end)
+    _ = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, 600000000000}, {:recv_timeout, 600000000000}]) end)
     true
   end
 
@@ -72,7 +72,7 @@ defmodule ElixirPerformanceTool do
     upload_url = url <> "data/upload"
     {_, encoded_png} = File.read("encoded_png.txt")
     payload = Poison.encode!(%{"contentType" => "image/png", "images" => [encoded_png]})
-    {time, ret} = :timer.tc(fn -> HTTPoison.post!(upload_url, payload, [],[{:timeout, 10000000}]) end)
+    {time, ret} = :timer.tc(fn -> HTTPoison.post!(upload_url, payload, [],[{:timeout, 600000000000}, {:recv_timeout, 600000000000}]) end)
     upload_id = Poison.decode!(ret.body)["upload_id"]
     {time, upload_id}
   end
@@ -80,14 +80,14 @@ defmodule ElixirPerformanceTool do
   def send_convert_pdf(url, upload_id) do
     convert_url = url <> "convert/pdf"
     payload = Poison.encode!(%{"contentType" => "image/png", "uploadId" => upload_id})
-    {time, _} = :timer.tc(fn -> HTTPoison.post!(convert_url, payload, [],[{:timeout, 10000000}]) end)
+    {time, _} = :timer.tc(fn -> HTTPoison.post!(convert_url, payload, [],[{:timeout, 600000000000}, {:recv_timeout, 600000000000}]) end)
     time
   end
 
   def send_download(url, upload_id) do
     download_url = url <> "convert/pdf/download"
     payload = Poison.encode!(%{"uploadId" => upload_id})
-    {time, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 10000000}]) end)
+    {time, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 600000000000}, {:recv_timeout, 600000000000}]) end)
     status_code = ret.status_code
     send_download(url, upload_id, time, status_code)
   end
@@ -95,7 +95,7 @@ defmodule ElixirPerformanceTool do
   def send_download(url, upload_id, time, status_code) when status_code !== 200 do
     download_url = url <> "convert/pdf/download"
     payload = Poison.encode!(%{"uploadId" => upload_id})
-    {time_tmp, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 10000000}]) end)
+    {time_tmp, ret} = :timer.tc(fn -> HTTPoison.post!(download_url, payload, [],[{:timeout, 600000000000}, {:recv_timeout, 600000000000}]) end)
     status_code = ret.status_code
     send_download(url, upload_id, time + time_tmp, status_code)
   end

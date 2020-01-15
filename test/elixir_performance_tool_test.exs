@@ -2,7 +2,7 @@ defmodule ElixirPerformanceToolTest do
   use ExUnit.Case
   doctest ElixirPerformanceTool
 
-  test "greets the world" do
-    assert ElixirPerformanceTool.hello() == :world
+  test "run stop" do
+    assert ElixirPerformanceTool.run(10,10,10)
   end
 end
