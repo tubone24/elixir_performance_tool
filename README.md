@@ -63,6 +63,14 @@ iex(1)> ElixirPerformanceTool.run(10, 10)
 
 Function `ElixirPerformanceTool.run` set 2 args, first one is parallel task number, second one is repeating times.
 
+### test
+
+Run test by mix test.
+
+```bash
+mix test
+```
+
 ## Contributing
 
 See [the contributing file](CONTRIBUTING.md)!
