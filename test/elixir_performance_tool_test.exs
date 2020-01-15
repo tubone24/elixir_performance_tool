@@ -1,8 +1,10 @@
 defmodule ElixirPerformanceToolTest do
   use ExUnit.Case
-  doctest ElixirPerformanceTool
+  # doctest ElixirPerformanceTool
 
-  test "run stop" do
-    assert ElixirPerformanceTool.run(10,10,10)
+  test "convert imagefile to base64" do
+    image = File.read!("./test.png")
+    encoded_png = :base64.encode(image)
+    assert ElixirPerformanceTool.create_base64png("./test.png") == encoded_png
   end
 end

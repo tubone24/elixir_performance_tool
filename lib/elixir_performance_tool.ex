@@ -75,9 +75,7 @@ defmodule ElixirPerformanceTool do
 
   def send_fileupload(url) do
     upload_url = url <> "data/upload"
-    # {_, encoded_png} = File.read("encoded_png.txt")
-    image = File.read!("./test.png")
-    encoded_png = :base64.encode(image)
+    encoded_png = create_base64png("./test.png")
     payload = Poison.encode!(%{"contentType" => "image/png", "images" => [encoded_png]})
     {time, ret} = :timer.tc(fn -> HTTPoison.post!(upload_url, payload, [],[{:timeout, :infinity}, {:recv_timeout, :infinity}]) end)
     upload_id = Poison.decode!(ret.body)["upload_id"]
@@ -126,5 +124,10 @@ defmodule ElixirPerformanceTool do
     {mills, _} = now.microsecond
     date = "#{now.year}-#{now.month}-#{now.day} #{now.hour}:#{now.minute}:#{now.second}.#{mills}"
     [["#{date}","#{count}", "#{average_time}", "#{total_time}"]]
+  end
+
+  def create_base64png(png_path) do
+    image = File.read!(png_path)
+    :base64.encode(image)
   end
 end
