@@ -63,7 +63,7 @@ defmodule ElixirPerformanceTool do
 
   def send_status(url) do
     status_url = url <> "status"
-    {time, _} = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, :infinity}]) end)
+    {time, _} = :timer.tc(fn -> HTTPoison.get!(status_url,[],[{:timeout, :infinity}, {:recv_timeout, :infinity}]) end)
     time
   end
 
